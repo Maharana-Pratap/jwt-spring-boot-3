@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -41,7 +42,8 @@ public class JwtUtil {
     public String generateToken(User authUser) {
         return Jwts.builder()
                 .setSubject(authUser.getUsername())
-                .claim("userId", authUser.getId().toString())
+                //.claim("userId", authUser.getId().toString())
+                .claim("roles", List.of("ROLE_" + authUser.getRole()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -59,5 +61,19 @@ public class JwtUtil {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    // public List<String> extractRoles(String token) {
+    //      return extractAllClaims(token).get("roles", List.class);
+    //  }
+
+    public List<String> extractRoles(String token) {
+        Object roles = extractAllClaims(token).get("roles");
+        if (roles instanceof List<?>) {
+            return ((List<?>) roles).stream()
+                    .map(Object::toString)   // ensure conversion to String
+                    .toList();
+        }
+        return List.of(); // default empty if no roles
     }
 }

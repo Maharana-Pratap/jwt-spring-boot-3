@@ -1,6 +1,5 @@
 package com.example.jwt_security.config;
 
-import com.example.jwt_security.dao.UserRepository;
 import com.example.jwt_security.dto.AuthRequest;
 import com.example.jwt_security.dto.AuthResponse;
 import com.example.jwt_security.entity.User;
@@ -21,6 +20,7 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword())
         );
         User user = (User) authentication.getPrincipal();
+        //var user = authentication.getPrincipal();
         String token = jwtUtil.generateToken(user);
         AuthResponse response = new AuthResponse();
         response.setToken(token);

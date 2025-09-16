@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
-
-public class ApiController {
+@RequestMapping("/admin")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
+public class AdminController {
 
     @GetMapping("/test")
     public String test() {
-        return "user_role test...!";
+        return "Admin user test...!";
     }
 }
